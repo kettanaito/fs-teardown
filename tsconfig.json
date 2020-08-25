@@ -1,0 +1,13 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "strict": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "declaration": true,
+    "declarationDir": "lib"
+  },
+  "include": ["src/index.ts"],
+  "exclude": ["node_modules"]
+}
