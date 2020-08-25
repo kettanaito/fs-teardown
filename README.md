@@ -10,25 +10,34 @@ npm install fs-teardown --save-dev
 
 ## API
 
-### `createTeardown(baseDir, ...operations)`
+### `createTeardown(baseDir: string, ...operations: TeardownOperation[]): TeardownControls`
 
-#### `prepare()`
+Running the `createTeardown` function returns you a control API to create the specified file system structure and clean it up on demand.
+
+#### `prepare(): Promise<string[]>`
 
 Creates files and directories specified in the `operations` of the teardown. Returns a `Promise` that resolves once all the operations have been executed.
 
-#### `getPath(...segments)`
+#### `getPath(...segments: string[]): string`
 
-Returns an absolute path to the given file or directory relative to the `baseDir` of the teardown.
+Returns an absolute path to the given file or directory relative to the `baseDir` of the teardown. Useful to reference a certain file or directory in the created setup.
 
-#### `cleanup()`
+```js
+const { getPath } = createTeardown('base-dir', withFile('my-file.json'))
 
-Removes the `baseDir` of the teardown. Returns a `Promise` that resolves ones the directory is removed.
+const jsonFilePath = getPath('my-file.json')
+// "/Users/admin/base-dir/my-file.json"
+```
 
-### `addFile(filePath, content)`
+#### `cleanup(): Promise<void>`
+
+Removes the `baseDir` of the teardown. Returns a `Promise` that resolves once the directory is removed.
+
+### `addFile(filePath: string, content?: string | Record<string, any>): Promise<string>`
 
 Creates a file at the given path with optional content.
 
-### `addDirectory(path, ...operations)`
+### `addDirectory(path: string, ...operations: TeardownOperation[]): Promise<string>`
 
 Created a directory with optional operations to execute in it (i.e. create nested directories and files).
 
