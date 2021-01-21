@@ -4,9 +4,10 @@ import * as util from 'util'
 import * as fsExtra from 'fs-extra'
 
 export interface TeardownControls {
-  getPath: (...segments: string[]) => string
   prepare: () => Promise<string[] | void>
   cleanup: () => Promise<void>
+  getPath: (...segments: string[]) => string
+  editFile: (filePath: string, nextContents: string) => void
 }
 
 export interface TeardownOperation {
@@ -71,14 +72,18 @@ export function createTeardown(
   const absoluteBaseDir = path.resolve(process.cwd(), baseDir)
 
   return {
-    getPath(...segments) {
-      return path.resolve(absoluteBaseDir, ...segments)
-    },
     prepare() {
       return runOperationsInCtx(operations, absoluteBaseDir)
     },
     cleanup() {
       return fsExtra.remove(absoluteBaseDir)
+    },
+    getPath(...segments) {
+      return path.resolve(absoluteBaseDir, ...segments)
+    },
+    editFile(filePath, nextContents) {
+      fsExtra.readFileSync(filePath)
+      fsExtra.writeFileSync(filePath, nextContents)
     },
   }
 }

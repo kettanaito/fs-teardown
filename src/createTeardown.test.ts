@@ -122,3 +122,16 @@ test('creates a nested directory with files', async () => {
 
   await cleanup()
 })
+
+test('edits a given file', async () => {
+  const { prepare, cleanup, getPath, editFile } = createTeardown(
+    BASE_DIR,
+    addDirectory('edit', addFile('list.txt')),
+  )
+  await prepare()
+
+  editFile(getPath('edit/list.txt'), 'buy milk')
+  expect(getFileContent(getPath('edit/list.txt'))).toBe('buy milk')
+
+  await cleanup()
+})
