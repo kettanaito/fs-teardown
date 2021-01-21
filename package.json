@@ -1,6 +1,6 @@
 {
   "name": "fs-teardown",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tear down a directory structure written to disk. Clean up afterwards.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
