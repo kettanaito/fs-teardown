@@ -130,7 +130,7 @@ test('edits a given file', async () => {
   )
   await prepare()
 
-  editFile(getPath('edit/list.txt'), 'buy milk')
+  editFile('edit/list.txt', 'buy milk')
   expect(getFileContent(getPath('edit/list.txt'))).toBe('buy milk')
 
   await cleanup()

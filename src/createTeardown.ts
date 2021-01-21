@@ -71,7 +71,7 @@ export function createTeardown(
 ): TeardownControls {
   const absoluteBaseDir = path.resolve(process.cwd(), baseDir)
 
-  return {
+  const api: TeardownControls = {
     prepare() {
       return runOperationsInCtx(operations, absoluteBaseDir)
     },
@@ -82,8 +82,11 @@ export function createTeardown(
       return path.resolve(absoluteBaseDir, ...segments)
     },
     editFile(filePath, nextContents) {
-      fsExtra.readFileSync(filePath)
-      fsExtra.writeFileSync(filePath, nextContents)
+      const absolutePath = api.getPath(filePath)
+      fsExtra.readFileSync(absolutePath)
+      fsExtra.writeFileSync(absolutePath, nextContents)
     },
   }
+
+  return api
 }
