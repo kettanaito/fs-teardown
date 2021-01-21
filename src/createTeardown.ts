@@ -8,6 +8,7 @@ export interface TeardownControls {
   cleanup: () => Promise<void>
   getPath: (...segments: string[]) => string
   editFile: (filePath: string, nextContents: string) => void
+  removeFile: (filePath: string) => void
 }
 
 export interface TeardownOperation {
@@ -85,6 +86,17 @@ export function createTeardown(
       const absolutePath = api.getPath(filePath)
       fsExtra.readFileSync(absolutePath)
       fsExtra.writeFileSync(absolutePath, nextContents)
+    },
+    removeFile(filePath) {
+      const absolutePath = api.getPath(filePath)
+
+      if (!fsExtra.existsSync(absolutePath)) {
+        throw new Error(
+          `Failed to remove path: ${absolutePath}. The given path does not exist.`,
+        )
+      }
+
+      fsExtra.removeSync(absolutePath)
     },
   }
 

@@ -135,3 +135,17 @@ test('edits a given file', async () => {
 
   await cleanup()
 })
+
+test('removes a given file', async () => {
+  const { prepare, cleanup, getPath, removeFile } = createTeardown(
+    BASE_DIR,
+    addDirectory('remove-file', addFile('one.txt'), addFile('two.txt')),
+  )
+  await prepare()
+
+  removeFile('remove-file/two.txt')
+  expect(fs.existsSync(getPath('remove-file/two.txt'))).toBe(false)
+  expect(fs.existsSync(getPath('remove-file/one.txt'))).toBe(true)
+
+  await cleanup()
+})
