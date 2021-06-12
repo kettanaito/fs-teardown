@@ -1,6 +1,5 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import * as util from 'util'
 import * as fsExtra from 'fs-extra'
 
 export interface TeardownControls {
@@ -27,7 +26,7 @@ function runOperationsInCtx(
  */
 export function addFile(
   filePath: string,
-  content?: string | Record<string, any>,
+  content?: string | Record<string, unknown>,
 ): TeardownOperation {
   return async (ctx) => {
     const absoluteFilePath = path.resolve(ctx, filePath)
