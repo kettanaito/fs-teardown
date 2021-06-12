@@ -34,12 +34,12 @@ export function addFile(
     await fsExtra.createFile(absoluteFilePath)
 
     if (content) {
-      const writeContent =
-        typeof content === 'string'
-          ? util.promisify(fs.writeFile)
-          : fsExtra.writeJSON
-
-      await writeContent(absoluteFilePath, content)
+      if (typeof content === 'string') {
+        const normalizedContent = content.trim()
+        await fs.promises.writeFile(absoluteFilePath, normalizedContent)
+      } else {
+        await fsExtra.writeJSON(absoluteFilePath, content)
+      }
     }
 
     return absoluteFilePath
