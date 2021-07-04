@@ -34,8 +34,7 @@ export function addFile(
 
     if (content) {
       if (typeof content === 'string') {
-        const normalizedContent = content.trim()
-        await fs.promises.writeFile(absoluteFilePath, normalizedContent)
+        await fs.promises.writeFile(absoluteFilePath, content)
       } else {
         await fsExtra.writeJSON(absoluteFilePath, content)
       }
