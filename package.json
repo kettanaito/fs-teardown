@@ -24,7 +24,7 @@
     "@types/fs-extra": "^9.0.11",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.12.2",
-    "ctl-scripts": "^0.0.6",
+    "ctl-scripts": "^0.3.2",
     "jest": "^27.0.4",
     "rimraf": "^3.0.2",
     "rollup": "^2.51.2",
