@@ -174,3 +174,25 @@ test('supports absolute "baseDir" path', async () => {
 
   await cleanup()
 })
+
+test('throws an exception when editing a non-existing file', async () => {
+  const { prepare, editFile, cleanup } = createTeardown(BASE_DIR)
+  await prepare()
+
+  expect(() => editFile('file.txt', 'text')).toThrowError(
+    'Failed to edit file at "file.txt": file does not exist. Did you forget to run "addFile"',
+  )
+
+  await cleanup()
+})
+
+test('throws an exception when removing a non-existing file', async () => {
+  const { prepare, removeFile, cleanup } = createTeardown(BASE_DIR)
+  await prepare()
+
+  expect(() => removeFile('no-op.txt')).toThrowError(
+    `Failed to remove file at "no-op.txt": file does not exist. Did you forget to run "addFile"?`,
+  )
+
+  await cleanup()
+})
