@@ -25,6 +25,7 @@
     "@types/jest": "^26.0.23",
     "@types/node": "^15.12.2",
     "ctl-scripts": "^0.3.2",
+    "cz-conventional-changelog": "3.3.0",
     "jest": "^27.0.4",
     "rimraf": "^3.0.2",
     "rollup": "^2.51.2",
@@ -36,5 +37,10 @@
   "dependencies": {
     "fs-extra": "^10.0.0",
     "outvariant": "^1.2.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
