@@ -54,6 +54,17 @@ test('creates a single file with a JSON content', async () => {
   await cleanup()
 })
 
+test('creates a single file using the "addFile" API', async () => {
+  const { prepare, addFile, getPath, cleanup } = createTeardown(BASE_DIR)
+  await prepare()
+  expect(fs.existsSync(getPath('file.txt'))).toBe(false)
+
+  await addFile('file.txt')
+  expect(fs.existsSync(getPath('file.txt'))).toBe(true)
+
+  await cleanup()
+})
+
 test('creates multiple files', async () => {
   const { prepare, cleanup, getPath } = createTeardown(
     BASE_DIR,
