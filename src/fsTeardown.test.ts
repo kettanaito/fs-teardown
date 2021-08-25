@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra'
-import { fsTeardown } from './new'
+import { fsTeardown } from './fsTeardown'
 
 function read(filePath: string) {
   return fs.readFileSync(filePath).toString('utf8')
