@@ -68,7 +68,9 @@ export function createTeardown(
   baseDir: string,
   ...operations: TeardownOperation[]
 ): TeardownControls {
-  const absoluteBaseDir = path.resolve(process.cwd(), baseDir)
+  const absoluteBaseDir = path.isAbsolute(baseDir)
+    ? baseDir
+    : path.resolve(process.cwd(), baseDir)
 
   const api: TeardownControls = {
     prepare() {
