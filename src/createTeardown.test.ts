@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import * as path from 'path'
 import { createTeardown, addFile, addDirectory } from './createTeardown'
 
 const BASE_DIR = './tmp'
@@ -146,6 +147,19 @@ test('removes a given file', async () => {
   removeFile('remove-file/two.txt')
   expect(fs.existsSync(getPath('remove-file/two.txt'))).toBe(false)
   expect(fs.existsSync(getPath('remove-file/one.txt'))).toBe(true)
+
+  await cleanup()
+})
+
+test('supports absolute "baseDir" path', async () => {
+  const absolutePath = path.resolve(__dirname, 'tmp')
+  const { prepare, getPath, cleanup } = createTeardown(
+    absolutePath,
+    addFile('file.txt'),
+  )
+  await prepare()
+
+  expect(fs.existsSync(getPath('file.txt'))).toBe(true)
 
   await cleanup()
 })
