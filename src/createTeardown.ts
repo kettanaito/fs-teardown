@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import * as fsExtra from 'fs-extra'
+import { invariant } from 'outvariant'
 
 export interface TeardownControls {
   prepare: () => Promise<string[] | void>
@@ -77,6 +78,12 @@ export function createTeardown(
       return runOperationsInCtx(operations, absoluteBaseDir)
     },
     cleanup() {
+      invariant(
+        fs.existsSync(absoluteBaseDir),
+        'Failed to clean up a directory at "%s": the directory does not exist. Did you forget to run "prepare"?',
+        absoluteBaseDir,
+      )
+
       return fsExtra.remove(absoluteBaseDir)
     },
     getPath(...segments) {
@@ -84,17 +91,24 @@ export function createTeardown(
     },
     editFile(filePath, nextContents) {
       const absolutePath = api.getPath(filePath)
+
+      invariant(
+        fs.existsSync(absoluteBaseDir),
+        'Failed to edit file at "%s": file does not exist. Did you forget to run "addFile"?',
+        absolutePath,
+      )
+
       fsExtra.readFileSync(absolutePath)
       fsExtra.writeFileSync(absolutePath, nextContents)
     },
     removeFile(filePath) {
       const absolutePath = api.getPath(filePath)
 
-      if (!fsExtra.existsSync(absolutePath)) {
-        throw new Error(
-          `Failed to remove path: ${absolutePath}. The given path does not exist.`,
-        )
-      }
+      invariant(
+        fsExtra.existsSync(absolutePath),
+        'Failed to remove file at "%s": file does not exist. Did you forget to run "addFile"?',
+        absolutePath,
+      )
 
       fsExtra.removeSync(absolutePath)
     },
