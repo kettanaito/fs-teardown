@@ -78,15 +78,13 @@ export function createTeardown(
 
   const api: TeardownControls = {
     prepare() {
+      if (!fs.existsSync) {
+        fs.mkdirSync(absoluteBaseDir)
+      }
+
       return runOperationsInCtx(operations, absoluteBaseDir)
     },
     cleanup() {
-      invariant(
-        fs.existsSync(absoluteBaseDir),
-        'Failed to clean up a directory at "%s": the directory does not exist. Did you forget to run "prepare"?',
-        absoluteBaseDir,
-      )
-
       return fsExtra.remove(absoluteBaseDir)
     },
     getPath(...segments) {
@@ -99,9 +97,9 @@ export function createTeardown(
       const absolutePath = api.getPath(filePath)
 
       invariant(
-        fs.existsSync(absoluteBaseDir),
+        fs.existsSync(absolutePath),
         'Failed to edit file at "%s": file does not exist. Did you forget to run "addFile"?',
-        absolutePath,
+        path.relative(absoluteBaseDir, absolutePath),
       )
 
       fsExtra.readFileSync(absolutePath)
@@ -113,7 +111,7 @@ export function createTeardown(
       invariant(
         fsExtra.existsSync(absolutePath),
         'Failed to remove file at "%s": file does not exist. Did you forget to run "addFile"?',
-        absolutePath,
+        path.relative(absoluteBaseDir, absolutePath),
       )
 
       fsExtra.removeSync(absolutePath)
