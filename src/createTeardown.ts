@@ -3,10 +3,13 @@ import * as path from 'path'
 import * as fsExtra from 'fs-extra'
 import { invariant } from 'outvariant'
 
+type FileContent = string | Record<string, unknown>
+
 export interface TeardownControls {
   prepare: () => Promise<string[] | void>
   cleanup: () => Promise<void>
   getPath: (...segments: string[]) => string
+  addFile: (filePath: string, contents?: FileContent) => Promise<string>
   editFile: (filePath: string, nextContents: string) => void
   removeFile: (filePath: string) => void
 }
@@ -27,7 +30,7 @@ function runOperationsInCtx(
  */
 export function addFile(
   filePath: string,
-  content?: string | Record<string, unknown>,
+  content?: FileContent,
 ): TeardownOperation {
   return async (ctx) => {
     const absoluteFilePath = path.resolve(ctx, filePath)
@@ -88,6 +91,9 @@ export function createTeardown(
     },
     getPath(...segments) {
       return path.resolve(absoluteBaseDir, ...segments)
+    },
+    addFile(filePath, content) {
+      return addFile(filePath, content)(absoluteBaseDir)
     },
     editFile(filePath, nextContents) {
       const absolutePath = api.getPath(filePath)
