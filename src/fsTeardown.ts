@@ -2,8 +2,6 @@ import * as path from 'path'
 import * as fs from 'fs-extra'
 import { invariant } from 'outvariant'
 
-const CWD = process.cwd()
-
 export type FileContent = string
 
 export interface FileTree {
@@ -13,10 +11,6 @@ export interface FileTree {
 export interface TeardownOptions {
   rootDir: string
   paths?: FileTree
-}
-
-async function writeFile(path: string, content: FileContent): Promise<void> {
-  return fs.writeFile(path, content)
 }
 
 async function emitTree(
@@ -45,7 +39,7 @@ async function emitTree(
     await fs.createFile(absoluteFilePath)
 
     if (content != null && typeof content !== 'object') {
-      await writeFile(absoluteFilePath, content)
+      await fs.writeFile(absoluteFilePath, content)
     }
 
     operations.push(fs.createFile(absoluteFilePath))
@@ -58,9 +52,13 @@ async function emitTree(
 export function fsTeardown(options: TeardownOptions) {
   const rootDir = path.isAbsolute(options.rootDir)
     ? options.rootDir
-    : path.relative(CWD, options.rootDir)
+    : path.relative(process.cwd(), options.rootDir)
 
   const api = {
+    /**
+     * Creates a root directory. Emits the initial file tree,
+     * if provided.
+     */
     async prepare(): Promise<string> {
       if (options.paths) {
         await emitTree(options.paths, rootDir)
@@ -70,12 +68,21 @@ export function fsTeardown(options: TeardownOptions) {
 
       return rootDir
     },
+    /**
+     * Returns an absolute path to the file/directory.
+     */
     resolve(...segments: string[]): string {
       return path.resolve(rootDir, ...segments)
     },
+    /**
+     * Creates a file tree relative to the root directory.
+     */
     async create(paths: FileTree): Promise<void> {
       await emitTree(paths, rootDir)
     },
+    /**
+     * Edits a file at the given path.
+     */
     async edit(filePath: string, content: FileContent): Promise<void> {
       const absolutePath = api.resolve(filePath)
 
@@ -92,8 +99,11 @@ export function fsTeardown(options: TeardownOptions) {
       )
 
       fs.readFileSync(absolutePath)
-      await writeFile(absolutePath, content)
+      await fs.writeFile(absolutePath, content)
     },
+    /**
+     * Removes a file/directory at the given path.
+     */
     async remove(filePath: string): Promise<void> {
       const absolutePath = api.resolve(filePath)
 
@@ -105,10 +115,17 @@ export function fsTeardown(options: TeardownOptions) {
 
       return fs.remove(absolutePath)
     },
+    /**
+     * Resets the root directory to the initial state.
+     * Reverts any runtime changes done to the file tree.
+     */
     async reset(): Promise<void> {
       await api.cleanup()
       await api.prepare()
     },
+    /**
+     * Removes the root directory and all its files.
+     */
     async cleanup(): Promise<void> {
       return fs.remove(rootDir)
     },
