@@ -13,6 +13,19 @@ afterAll(async () => {
   await api.cleanup()
 })
 
+it('creates an empty file', async () => {
+  await api.create({ 'empty-file.txt': null })
+
+  expect(read(api.resolve('empty-file.txt'))).toEqual('')
+})
+
+it('creates a dot-file', async () => {
+  await api.create({ '.eslintrc': null })
+
+  expect(isDirectory(api.resolve('.eslintrc'))).toEqual(false)
+  expect(read(api.resolve('.eslintrc'))).toEqual('')
+})
+
 it('creates a file with content', async () => {
   await api.create({
     'inject-file.txt': 'arbitrary content',
