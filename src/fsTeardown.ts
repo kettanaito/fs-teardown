@@ -60,7 +60,6 @@ export function fsTeardown(options: TeardownOptions) {
   const rootDir = path.isAbsolute(options.rootDir)
     ? options.rootDir
     : path.relative(CWD, options.rootDir)
-  const runtimePaths = new Set<string>()
 
   const api = {
     async prepare(): Promise<string> {
@@ -77,7 +76,6 @@ export function fsTeardown(options: TeardownOptions) {
     },
     async create(paths: FileTree): Promise<void> {
       const newTree = await emitTree(paths, rootDir)
-      newTree.forEach((path) => runtimePaths.add(path))
     },
     async edit(filePath: string, content: FileContent) {
       const absolutePath = api.resolve(filePath)
@@ -103,17 +101,8 @@ export function fsTeardown(options: TeardownOptions) {
       return fs.remove(absolutePath)
     },
     async reset(): Promise<void> {
-      const operations: Promise<unknown>[] = []
-
-      for (const path of runtimePaths) {
-        operations.push(
-          api.remove(path).then(() => {
-            runtimePaths.delete(path)
-          }),
-        )
-      }
-
-      await Promise.all(operations)
+      await api.cleanup()
+      await api.prepare()
     },
     async cleanup(): Promise<void> {
       return fs.remove(rootDir)
