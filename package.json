@@ -42,5 +42,15 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "keywords": [
+    "fs",
+    "mock",
+    "tree",
+    "prepare",
+    "cleanup",
+    "file",
+    "directory",
+    "test"
+  ]
 }
