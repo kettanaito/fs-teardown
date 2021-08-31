@@ -77,7 +77,7 @@ export function fsTeardown(options: TeardownOptions) {
     async create(paths: FileTree): Promise<void> {
       const newTree = await emitTree(paths, rootDir)
     },
-    async edit(filePath: string, content: FileContent) {
+    async edit(filePath: string, content: FileContent): Promise<void> {
       const absolutePath = api.resolve(filePath)
 
       invariant(
