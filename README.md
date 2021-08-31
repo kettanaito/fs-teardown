@@ -1,6 +1,6 @@
 # `fs-teardown`
 
-Tear down a file tree written to disk, clean up afterward.
+File-system directory structure mock for your tests. Prepare, modify, clean up.
 
 ## Getting started
 
