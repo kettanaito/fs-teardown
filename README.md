@@ -17,14 +17,16 @@ $ yan add fs-teardown -D
 Calling the `fsTeardown` function returns you a control API to create the specified file system structure and clean it up on demand.
 
 ```js
-const fsMock = fsTeardown({ rootDir: './tmp' })
+const fsMock = fsTeardown({
+  rootDir: './example',
+})
 ```
 
 You can specify an optional `paths` property to create an initial file tree.
 
 ```js
 fsTeardown({
-  rootDir: './tmp',
+  rootDir: './example',
   paths: {
     'empty.txt': null,
     'file.txt': 'hello world',
@@ -35,7 +37,7 @@ fsTeardown({
 })
 ```
 
-### `prepare(): Promise<string[]>`
+### `prepare(): Promise<string>`
 
 Creates files and directories specified in the `operations` of the teardown. Returns a `Promise` that resolves once all the operations have been executed.
 
@@ -44,7 +46,9 @@ Creates files and directories specified in the `operations` of the teardown. Ret
 Creates a file tree relative to the root directory after the initial setup.
 
 ```js
-const fsMock = fsTeardown({ rootDir: './tmp' })
+const fsMock = fsTeardown({
+  rootDir: './example',
+})
 
 await fsMock.create({
   'file.txt': 'hello world',
@@ -58,14 +62,14 @@ Returns an absolute path to the given file or directory relative to the `rootDir
 
 ```js
 const fsMock = fsTeardown({
-  rootDir: './root-dir',
+  rootDir: './example',
   paths: {
     'file.txt': 'hello world',
   },
 })
 
 const filePath = fsMock.resolve('file.txt')
-// "/Users/admin/root-dir/file.txt"
+// "/Users/admin/example/file.txt"
 ```
 
 ### `edit(filePath: string): Promise<void>`
