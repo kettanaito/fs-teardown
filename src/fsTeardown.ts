@@ -23,7 +23,12 @@ async function emitTree(
 
   for (const [filePath, content] of Object.entries(tree)) {
     const absoluteFilePath = path.resolve(rootDir, filePath)
-    const isDirectory = path.extname(filePath) === ''
+    const isDirectory =
+      // Treat dot-files as files, not directories.
+      !filePath.startsWith('.') &&
+      // Otherwise treat file paths with extensions as files.
+      path.extname(filePath) === ''
+
     paths.push(absoluteFilePath)
 
     if (isDirectory) {
