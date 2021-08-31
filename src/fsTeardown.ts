@@ -75,7 +75,7 @@ export function fsTeardown(options: TeardownOptions) {
       return path.resolve(rootDir, ...segments)
     },
     async create(paths: FileTree): Promise<void> {
-      const newTree = await emitTree(paths, rootDir)
+      await emitTree(paths, rootDir)
     },
     async edit(filePath: string, content: FileContent): Promise<void> {
       const absolutePath = api.resolve(filePath)
@@ -83,6 +83,12 @@ export function fsTeardown(options: TeardownOptions) {
       invariant(
         fs.existsSync(absolutePath),
         'Failed to edit the file at "%s": file does not exist. Did you forget to call "create"?',
+        filePath,
+      )
+
+      invariant(
+        !fs.statSync(absolutePath).isDirectory(),
+        'Failed to edit the file at "%s": given path is a directory.',
         filePath,
       )
 
