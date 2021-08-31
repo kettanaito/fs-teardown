@@ -20,42 +20,54 @@ async function writeFile(path: string, content: FileContent): Promise<void> {
   return fs.writeFile(path, content)
 }
 
-async function emitTree(tree: FileTree, rootDir: string): Promise<any> {
-  return Promise.all(
-    Object.entries(tree).map(async ([filePath, content]) => {
-      const absoluteFilePath = path.resolve(rootDir, filePath)
-      const isDirectory = path.extname(filePath) === ''
+async function emitTree(
+  tree: FileTree,
+  rootDir: string,
+  initialPaths: string[] = [],
+): Promise<string[]> {
+  const paths: string[] = initialPaths
+  const operations: Promise<unknown>[] = []
 
-      if (isDirectory) {
-        await fs.mkdirp(absoluteFilePath)
+  for (const [filePath, content] of Object.entries(tree)) {
+    const absoluteFilePath = path.resolve(rootDir, filePath)
+    const isDirectory = path.extname(filePath) === ''
+    paths.push(absoluteFilePath)
 
-        if (content !== null && typeof content === 'object') {
-          return emitTree(content, absoluteFilePath)
-        }
+    if (isDirectory) {
+      await fs.mkdirp(absoluteFilePath)
 
-        return
+      if (content !== null && typeof content === 'object') {
+        operations.push(emitTree(content, absoluteFilePath, paths))
       }
 
-      await fs.createFile(absoluteFilePath)
+      continue
+    }
 
-      if (content === null || typeof content === 'object') {
-        return
-      }
+    await fs.createFile(absoluteFilePath)
 
-      return writeFile(absoluteFilePath, content)
-    }),
-  )
+    if (content != null && typeof content !== 'object') {
+      await writeFile(absoluteFilePath, content)
+    }
+
+    operations.push(fs.createFile(absoluteFilePath))
+  }
+
+  await Promise.all(operations)
+  return paths
 }
 
 export function fsTeardown(options: TeardownOptions) {
   const rootDir = path.isAbsolute(options.rootDir)
     ? options.rootDir
     : path.relative(CWD, options.rootDir)
+  const runtimePaths = new Set<string>()
 
   const api = {
     async prepare(): Promise<string> {
       if (options.paths) {
-        await api.create(options.paths)
+        await emitTree(options.paths, rootDir)
+      } else {
+        await fs.mkdirp(rootDir)
       }
 
       return rootDir
@@ -64,7 +76,8 @@ export function fsTeardown(options: TeardownOptions) {
       return path.resolve(rootDir, ...segments)
     },
     async create(paths: FileTree): Promise<void> {
-      await emitTree(paths, rootDir)
+      const newTree = await emitTree(paths, rootDir)
+      newTree.forEach((path) => runtimePaths.add(path))
     },
     async edit(filePath: string, content: FileContent) {
       const absolutePath = api.resolve(filePath)
@@ -88,6 +101,19 @@ export function fsTeardown(options: TeardownOptions) {
       )
 
       return fs.remove(absolutePath)
+    },
+    async reset(): Promise<void> {
+      const operations: Promise<unknown>[] = []
+
+      for (const path of runtimePaths) {
+        operations.push(
+          api.remove(path).then(() => {
+            runtimePaths.delete(path)
+          }),
+        )
+      }
+
+      await Promise.all(operations)
     },
     async cleanup(): Promise<void> {
       return fs.remove(rootDir)
