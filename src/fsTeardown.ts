@@ -12,7 +12,6 @@ export interface FileTree {
 
 export interface TeardownOptions {
   rootDir: string
-  inMemory?: boolean
   paths?: FileTree
 }
 
