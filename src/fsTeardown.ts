@@ -2,6 +2,45 @@ import * as path from 'path'
 import * as fs from 'fs-extra'
 import { invariant } from 'outvariant'
 
+export interface TeardownApi {
+  /**
+   * Creates a root directory. Emits the initial file tree,
+   * if provided.
+   */
+  prepare(): Promise<string>
+
+  /**
+   * Returns an absolute path to the file/directory.
+   */
+  resolve(...segments: string[]): string
+
+  /**
+   * Creates a file tree relative to the root directory.
+   */
+  create(tree: FileTree): Promise<void>
+
+  /**
+   * Edits a file at the given path.
+   */
+  edit(filePath: string, nextContent: string): Promise<void>
+
+  /**
+   * Removes a file/directory at the given path.
+   */
+  remove(filePath: string): Promise<void>
+
+  /**
+   * Resets the root directory to the initial state.
+   * Reverts any runtime changes done to the file tree.
+   */
+  reset(): Promise<void>
+
+  /**
+   * Removes the root directory and all its files.
+   */
+  cleanup(): Promise<void>
+}
+
 export type FileContent = string
 
 export interface FileTree {
@@ -54,17 +93,13 @@ async function emitTree(
   return paths
 }
 
-export function fsTeardown(options: TeardownOptions) {
+export function fsTeardown(options: TeardownOptions): TeardownApi {
   const rootDir = path.isAbsolute(options.rootDir)
     ? options.rootDir
     : path.relative(process.cwd(), options.rootDir)
 
-  const api = {
-    /**
-     * Creates a root directory. Emits the initial file tree,
-     * if provided.
-     */
-    async prepare(): Promise<string> {
+  const api: TeardownApi = {
+    async prepare() {
       if (options.paths) {
         await emitTree(options.paths, rootDir)
       } else {
@@ -73,22 +108,16 @@ export function fsTeardown(options: TeardownOptions) {
 
       return rootDir
     },
-    /**
-     * Returns an absolute path to the file/directory.
-     */
-    resolve(...segments: string[]): string {
+
+    resolve(...segments): string {
       return path.resolve(rootDir, ...segments)
     },
-    /**
-     * Creates a file tree relative to the root directory.
-     */
-    async create(paths: FileTree): Promise<void> {
-      await emitTree(paths, rootDir)
+
+    async create(tree) {
+      await emitTree(tree, rootDir)
     },
-    /**
-     * Edits a file at the given path.
-     */
-    async edit(filePath: string, content: FileContent): Promise<void> {
+
+    async edit(filePath, content) {
       const absolutePath = api.resolve(filePath)
 
       invariant(
@@ -106,10 +135,8 @@ export function fsTeardown(options: TeardownOptions) {
       fs.readFileSync(absolutePath)
       await fs.writeFile(absolutePath, content)
     },
-    /**
-     * Removes a file/directory at the given path.
-     */
-    async remove(filePath: string): Promise<void> {
+
+    async remove(filePath) {
       const absolutePath = api.resolve(filePath)
 
       invariant(
@@ -120,18 +147,13 @@ export function fsTeardown(options: TeardownOptions) {
 
       return fs.remove(absolutePath)
     },
-    /**
-     * Resets the root directory to the initial state.
-     * Reverts any runtime changes done to the file tree.
-     */
-    async reset(): Promise<void> {
+
+    async reset() {
       await api.cleanup()
       await api.prepare()
     },
-    /**
-     * Removes the root directory and all its files.
-     */
-    async cleanup(): Promise<void> {
+
+    async cleanup() {
       return fs.remove(rootDir)
     },
   }
