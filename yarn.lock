@@ -2871,10 +2871,10 @@ cssstyle@^2.2.0, cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
-ctl-scripts@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/ctl-scripts/-/ctl-scripts-0.3.2.tgz#7bd8e7561304a6b4beb43023fda0c1caaa9c171e"
-  integrity sha512-1xmh+JaeG6oSc1NJIEyBtglSz2f16/e6LAN64LJTBEL7q7lKYCvPFy4p5o2YGazQFnFNv9nJPSV9hUfzLx4eJQ==
+ctl-scripts@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/ctl-scripts/-/ctl-scripts-0.3.4.tgz#1e15f10fd8a7ba87e4e392ded34c93c760ef043f"
+  integrity sha512-4pXzGXlcHe2OWmTthvdhPNB0k4Jaw+Tks5spGagc/Tf/1kxMJNPrXRMM9ZVAjKvJjP+ZtPG3pvy/oXpEN9Z+zQ==
   dependencies:
     "@commitlint/cli" "^12.1.4"
     "@commitlint/config-conventional" "^12.1.4"
