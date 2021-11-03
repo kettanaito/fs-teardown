@@ -1,5 +1,4 @@
 import { fsTeardown } from '../src'
-import { read } from './helpers/fs'
 
 const api = fsTeardown({
   rootDir: 'edit',
@@ -21,16 +20,16 @@ afterAll(async () => {
 })
 
 it('edits an existing file', async () => {
-  expect(read(api.resolve('file.txt'))).toEqual('hello world')
+  expect(await api.read('file.txt', 'utf8')).toEqual('hello world')
 
   await api.edit('file.txt', 'hello universe')
-  expect(read(api.resolve('file.txt'))).toEqual('hello universe')
+  expect(await api.read('file.txt', 'utf8')).toEqual('hello universe')
 })
 
 it('edits a newly created file', async () => {
   await api.create({ 'edit-me.txt': 'some' })
   await api.edit('edit-me.txt', 'another')
-  expect(read(api.resolve('edit-me.txt'))).toEqual('another')
+  expect(await api.read('edit-me.txt', 'utf8')).toEqual('another')
 })
 
 it('throws an exception when editing a non-existing file', async () => {
