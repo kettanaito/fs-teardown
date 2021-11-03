@@ -1,5 +1,5 @@
 import { fsTeardown } from '../src'
-import { isDirectory, read } from '../test/helpers/fs'
+import { isDirectory } from '../test/helpers/fs'
 
 const api = fsTeardown({
   rootDir: 'tmp',
@@ -27,11 +27,11 @@ afterAll(async () => {
 })
 
 it('creates an empty file', async () => {
-  expect(read(api.resolve('empty.txt'))).toEqual('')
+  expect(await api.read('empty.txt', 'utf8')).toEqual('')
 })
 
 it('creates a text file', async () => {
-  expect(read(api.resolve('text.txt'))).toEqual('hello world')
+  expect(await api.read('text.txt', 'utf8')).toEqual('hello world')
 })
 
 it('creates an empty directory', async () => {
@@ -41,18 +41,18 @@ it('creates an empty directory', async () => {
 it('creates directory with files', async () => {
   expect(isDirectory(api.resolve('dir-nested'))).toEqual(true)
 
-  expect(read(api.resolve('dir-nested/one.txt'))).toEqual('first')
-  expect(read(api.resolve('dir-nested/two.txt'))).toEqual('second')
+  expect(await api.read('dir-nested/one.txt', 'utf8')).toEqual('first')
+  expect(await api.read('dir-nested/two.txt', 'utf8')).toEqual('second')
 })
 
 it('creates a deeply nested directory with files', async () => {
   expect(isDirectory(api.resolve('dir-deeply/nested/directory'))).toEqual(true)
   expect(
-    read(api.resolve('dir-deeply/nested/directory/with-file.txt')),
+    await api.read('dir-deeply/nested/directory/with-file.txt', 'utf8'),
   ).toEqual('yes')
 })
 
 it('creates a deeply nested file', async () => {
   expect(isDirectory(api.resolve('dir-deeply/nested'))).toEqual(true)
-  expect(read(api.resolve('dir-deeply/nested/file.txt'))).toEqual('yes')
+  expect(await api.read('dir-deeply/nested/file.txt', 'utf8')).toEqual('yes')
 })

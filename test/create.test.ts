@@ -1,5 +1,5 @@
 import { fsTeardown } from '../src'
-import { isDirectory, read } from './helpers/fs'
+import { isDirectory } from './helpers/fs'
 
 const api = fsTeardown({
   rootDir: 'create',
@@ -16,14 +16,14 @@ afterAll(async () => {
 it('creates an empty file', async () => {
   await api.create({ 'empty-file.txt': null })
 
-  expect(read(api.resolve('empty-file.txt'))).toEqual('')
+  expect(await api.read('empty-file.txt', 'utf8')).toEqual('')
 })
 
 it('creates a dot-file', async () => {
   await api.create({ '.eslintrc': null })
 
   expect(isDirectory(api.resolve('.eslintrc'))).toEqual(false)
-  expect(read(api.resolve('.eslintrc'))).toEqual('')
+  expect(await api.read('.eslintrc', 'utf8')).toEqual('')
 })
 
 it('creates a file with content', async () => {
@@ -31,7 +31,7 @@ it('creates a file with content', async () => {
     'inject-file.txt': 'arbitrary content',
   })
 
-  expect(read(api.resolve('inject-file.txt'))).toEqual('arbitrary content')
+  expect(await api.read('inject-file.txt', 'utf8')).toEqual('arbitrary content')
 })
 
 it('creates an empty directory', async () => {
@@ -51,6 +51,6 @@ it('creates a directory with files', async () => {
   })
 
   expect(isDirectory(api.resolve('inject-nested'))).toEqual(true)
-  expect(read(api.resolve('inject-nested/1.txt'))).toEqual('one')
-  expect(read(api.resolve('inject-nested/2.txt'))).toEqual('two')
+  expect(await api.read('inject-nested/1.txt', 'utf8')).toEqual('one')
+  expect(await api.read('inject-nested/2.txt', 'utf8')).toEqual('two')
 })
