@@ -72,6 +72,27 @@ const filePath = fsMock.resolve('file.txt')
 // "/Users/admin/example/file.txt"
 ```
 
+### `read(filePath: string, encoding?: BufferEncoding): Promise<Buffer | string>`
+
+Reads a file at the given path.
+
+By default, returns the `Buffer` of the read file. Provide the second `encoding` argument to convert the buffer to the given encoding.
+
+```js
+const fsMock = fsTeardown({
+  rootDir: './example',
+  paths: {
+    'file.txt': 'hello world'
+  }
+})
+
+// Read the "file.txt" content as Buffer.
+const buffer = await fsMock.read('file.txt')
+
+// Read the "file.txt" content as text.
+const text = await fsMock.read('file.txt', 'utf8)
+```
+
 ### `edit(filePath: string): Promise<void>`
 
 Edits a file at the given path. Throws an error if the given file doesn't exist.
