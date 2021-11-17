@@ -53,7 +53,7 @@ export interface FileTree {
   [path: string]: FileContent | FileTree | null
 }
 
-export interface TeardownOptions {
+export interface CreateTeardownOptions {
   rootDir: string
   paths?: FileTree
 }
@@ -99,7 +99,7 @@ async function emitTree(
   return paths
 }
 
-export function fsTeardown(options: TeardownOptions): TeardownApi {
+export function createTeardown(options: CreateTeardownOptions): TeardownApi {
   const rootDir = path.isAbsolute(options.rootDir)
     ? options.rootDir
     : path.relative(process.cwd(), options.rootDir)

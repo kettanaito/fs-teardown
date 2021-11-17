@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra'
-import { fsTeardown } from '../src'
+import { createTeardown } from '../src'
 
-const api = fsTeardown({
+const api = createTeardown({
   rootDir: 'reset',
   paths: {
     'file.txt': 'hello world',

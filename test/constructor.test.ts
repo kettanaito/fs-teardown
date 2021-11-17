@@ -1,7 +1,7 @@
-import { fsTeardown } from '../src'
+import { createTeardown } from '../src'
 import { isDirectory } from '../test/helpers/fs'
 
-const api = fsTeardown({
+const api = createTeardown({
   rootDir: 'tmp',
   paths: {
     'empty.txt': null,
