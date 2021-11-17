@@ -24,7 +24,7 @@ it('removes the runtime paths', async () => {
   await api.reset()
   expect(fs.existsSync(api.resolve('one.txt'))).toEqual(false)
   expect(fs.existsSync(api.resolve('two.txt'))).toEqual(false)
-  expect(await api.read('file.txt', 'utf8')).toEqual('hello world')
+  expect(await api.readFile('file.txt', 'utf8')).toEqual('hello world')
 })
 
 it('removes multiple runtime paths', async () => {
@@ -37,15 +37,17 @@ it('removes multiple runtime paths', async () => {
   await api.reset()
   expect(fs.existsSync(api.resolve('abc.txt'))).toEqual(false)
   expect(fs.existsSync(api.resolve('def.txt'))).toEqual(false)
-  expect(await api.read('file.txt', 'utf8')).toEqual('hello world')
+  expect(await api.readFile('file.txt', 'utf8')).toEqual('hello world')
 })
 
 it('restores the initial paths edited on runtime', async () => {
   await api.edit('file.txt', 'welcome to the jungle')
-  expect(await api.read('file.txt', 'utf8')).toEqual('welcome to the jungle')
+  expect(await api.readFile('file.txt', 'utf8')).toEqual(
+    'welcome to the jungle',
+  )
 
   await api.reset()
-  expect(await api.read('file.txt', 'utf8')).toEqual('hello world')
+  expect(await api.readFile('file.txt', 'utf8')).toEqual('hello world')
 })
 
 it('restores the initial paths removed on runtime', async () => {
@@ -53,5 +55,5 @@ it('restores the initial paths removed on runtime', async () => {
   expect(fs.existsSync(api.resolve('file.txt'))).toEqual(false)
 
   await api.reset()
-  expect(await api.read('file.txt', 'utf8')).toEqual('hello world')
+  expect(await api.readFile('file.txt', 'utf8')).toEqual('hello world')
 })
