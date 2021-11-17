@@ -1,6 +1,6 @@
-import { fsTeardown } from '../src'
+import { createTeardown } from '../src'
 
-const api = fsTeardown({
+const api = createTeardown({
   rootDir: 'edit',
   paths: {
     'file.txt': 'hello world',

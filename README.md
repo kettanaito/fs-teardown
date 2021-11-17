@@ -12,20 +12,20 @@ $ yan add fs-teardown -D
 
 ## API
 
-### `fsTeardown(options: TeardownOptions): TeardownAPI`
+### `createTeardown(options: CreateTeardownOptions): TeardownAPI`
 
-Calling the `fsTeardown` function returns you a control API to create the specified file system structure and clean it up on demand.
+Calling the `createTeardown` function returns you the API to create the specified file system structure and clean it up on demand.
 
 ```js
-const fsMock = fsTeardown({
+const fsMock = createTeardown({
   rootDir: './example',
 })
 ```
 
-You can specify an optional `paths` property to create an initial file tree.
+You can specify an optional `paths` property to describe an initial directory/file tree.
 
 ```js
-fsTeardown({
+createTeardown({
   rootDir: './example',
   paths: {
     'empty.txt': null,
@@ -46,7 +46,7 @@ Creates files and directories specified in the `operations` of the teardown. Ret
 Creates a file tree relative to the root directory after the initial setup.
 
 ```js
-const fsMock = fsTeardown({
+const fsMock = createTeardown({
   rootDir: './example',
 })
 
@@ -61,7 +61,7 @@ await fsMock.create({
 Returns an absolute path to the given file or directory relative to the `rootDir` of the teardown. Useful to reference a certain file or directory in the created file structure.
 
 ```js
-const fsMock = fsTeardown({
+const fsMock = createTeardown({
   rootDir: './example',
   paths: {
     'file.txt': 'hello world',
@@ -72,14 +72,14 @@ const filePath = fsMock.resolve('file.txt')
 // "/Users/admin/example/file.txt"
 ```
 
-### `read(filePath: string, encoding?: BufferEncoding): Promise<Buffer | string>`
+### `readFile(filePath: string, encoding?: BufferEncoding): Promise<Buffer | string>`
 
 Reads a file at the given path.
 
 By default, returns the `Buffer` of the read file. Provide the second `encoding` argument to convert the buffer to the given encoding.
 
 ```js
-const fsMock = fsTeardown({
+const fsMock = createTeardown({
   rootDir: './example',
   paths: {
     'file.txt': 'hello world'
@@ -87,10 +87,10 @@ const fsMock = fsTeardown({
 })
 
 // Read the "file.txt" content as Buffer.
-const buffer = await fsMock.read('file.txt')
+const buffer = await fsMock.readFile('file.txt')
 
 // Read the "file.txt" content as text.
-const text = await fsMock.read('file.txt', 'utf8)
+const text = await fsMock.readFile('file.txt', 'utf8)
 ```
 
 ### `edit(filePath: string): Promise<void>`
@@ -98,7 +98,7 @@ const text = await fsMock.read('file.txt', 'utf8)
 Edits a file at the given path. Throws an error if the given file doesn't exist.
 
 ```js
-const fsMock = fsTeardown({
+const fsMock = createTeardown({
   rootDir: './example',
   paths: {
     'file.txt': 'hello world',
@@ -113,7 +113,7 @@ await fsMock.edit('file.txt', 'welcome to the jungle')
 Resets the root directory to its initial state.
 
 ```js
-const fsMock = fsTeardown({
+const fsMock = createTeardown({
   rootDir: './example',
   paths: {
     'file.txt': 'hello world',
