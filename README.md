@@ -1,6 +1,6 @@
 # `fs-teardown`
 
-File-system directory structure mock for your tests. Prepare, modify, clean up.
+Teardown API for testing file system-dependent code.
 
 ## Getting started
 

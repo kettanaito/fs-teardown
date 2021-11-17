@@ -1,7 +1,7 @@
 {
   "name": "fs-teardown",
   "version": "0.3.1-beta.2",
-  "description": "File-system directory structure mock for your tests. Prepare, modify, clean up.",
+  "description": "Teardown API for testing file system-dependent code.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "repository": "git@github.com:kettanaito/fs-teardown.git",
