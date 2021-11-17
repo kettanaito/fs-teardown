@@ -1,1 +1,1 @@
-export * from './fsTeardown'
+export * from './createTeardown'
