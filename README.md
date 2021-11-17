@@ -17,7 +17,7 @@ $ yan add fs-teardown -D
 Calling the `createTeardown` function returns you the API to create the specified file system structure and clean it up on demand.
 
 ```js
-const fsMock = createTeardown({
+const api = createTeardown({
   rootDir: './example',
 })
 ```
@@ -48,11 +48,11 @@ Creates files and directories specified in the `operations` of the teardown. Ret
 Creates a file tree relative to the root directory after the initial setup.
 
 ```js
-const fsMock = createTeardown({
+const api = createTeardown({
   rootDir: './example',
 })
 
-await fsMock.create({
+await api.create({
   'file.txt': 'hello world',
   'directory/another-file.txt': 'hello to you',
 })
@@ -63,14 +63,14 @@ await fsMock.create({
 Returns an absolute path to the given file or directory relative to the `rootDir` of the teardown. Useful to reference a certain file or directory in the created file structure.
 
 ```js
-const fsMock = createTeardown({
+const api = createTeardown({
   rootDir: './example',
   paths: {
     'file.txt': 'hello world',
   },
 })
 
-const filePath = fsMock.resolve('file.txt')
+const filePath = api.resolve('file.txt')
 // "/Users/admin/example/file.txt"
 ```
 
@@ -81,7 +81,7 @@ Reads a file at the given path.
 By default, returns the `Buffer` of the read file. Provide the second `encoding` argument to convert the buffer to the given encoding.
 
 ```js
-const fsMock = createTeardown({
+const api = createTeardown({
   rootDir: './example',
   paths: {
     'file.txt': 'hello world'
@@ -89,10 +89,10 @@ const fsMock = createTeardown({
 })
 
 // Read the "file.txt" content as Buffer.
-const buffer = await fsMock.readFile('file.txt')
+const buffer = await api.readFile('file.txt')
 
 // Read the "file.txt" content as text.
-const text = await fsMock.readFile('file.txt', 'utf8)
+const text = await api.readFile('file.txt', 'utf8)
 ```
 
 ### `edit(filePath: string): Promise<void>`
@@ -100,14 +100,14 @@ const text = await fsMock.readFile('file.txt', 'utf8)
 Edits a file at the given path. Throws an error if the given file doesn't exist.
 
 ```js
-const fsMock = createTeardown({
+const api = createTeardown({
   rootDir: './example',
   paths: {
     'file.txt': 'hello world',
   },
 })
 
-await fsMock.edit('file.txt', 'welcome to the jungle')
+await api.edit('file.txt', 'welcome to the jungle')
 ```
 
 ### `reset(): Promise<void>`
@@ -115,7 +115,7 @@ await fsMock.edit('file.txt', 'welcome to the jungle')
 Resets the root directory to its initial state.
 
 ```js
-const fsMock = createTeardown({
+const api = createTeardown({
   rootDir: './example',
   paths: {
     'file.txt': 'hello world',
@@ -124,10 +124,10 @@ const fsMock = createTeardown({
 })
 
 // Runtime actions.
-await fsMock.edit('file.txt', 'welcome to the jungle')
-await fsMock.remove('dir')
+await api.edit('file.txt', 'welcome to the jungle')
+await api.remove('dir')
 
-await fsMock.restore()
+await api.restore()
 // - "file.txt" was restored to "hello world";
 // - "dir" and "dir/nested.txt" were restored.
 ```
@@ -137,12 +137,12 @@ await fsMock.restore()
 Removes the root directory of the teardown. Returns a `Promise` that resolves once the directory is removed.
 
 ```js
-await fsMock.cleanup()
+await api.cleanup()
 ```
 
 ## Recipes
 
-### Create empty file
+### Empty file
 
 ```js
 fsMocks.create({
@@ -150,44 +150,46 @@ fsMocks.create({
 })
 ```
 
-### Create file with text content
+### Text file
 
 ```js
-fsMock.create({
+api.create({
   'file.txt': 'hello world',
 })
 ```
 
-### Create file with JSON content
+### JSON file
 
 ```js
-fsMock.create({
+api.create({
   'file.json': JSON.stringify({ a: 1 }, null, 2),
 })
 ```
 
-### Create empty directory
+> Note that the JSON file's content must be a string. Object values are treated as [nested files](#directory-with-multiple-files).
+
+### Empty directory
 
 ```js
-fsMock.create({
+api.create({
   'empty-dir': null,
 })
 ```
 
 > Keys without extensions are treated as directories.
 
-### Create nested directories
+### Nested directories
 
 ```js
-fsMock.create({
+api.create({
   'one/to/three': null,
 })
 ```
 
-### Create directory with multiple files
+### Directory with multiple files
 
 ```js
-fsMock.create({
+api.create({
   'deeply/nested/directory': {
     'one.txt': 'first file',
     'two.txt': 'second file',
