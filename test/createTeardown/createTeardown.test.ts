@@ -1,5 +1,5 @@
-import { createTeardown } from '../src'
-import { isDirectory } from '../test/helpers/fs'
+import { createTeardown } from '../../src'
+import { isDirectory } from '../helpers/fs'
 
 const api = createTeardown({
   rootDir: 'tmp',
