@@ -22,8 +22,8 @@ export interface TeardownApi {
   /**
    * Reads a file at the given path.
    */
-  read(filePath: string): Promise<Buffer>
-  read(filePath: string, encoding?: BufferEncoding): Promise<string>
+  readFile(filePath: string): Promise<Buffer>
+  readFile(filePath: string, encoding?: BufferEncoding): Promise<string>
 
   /**
    * Edits a file at the given path.
@@ -123,7 +123,7 @@ export function fsTeardown(options: TeardownOptions): TeardownApi {
       await emitTree(tree, rootDir)
     },
 
-    async read(...args: Parameters<TeardownApi['read']>) {
+    async readFile(...args: Parameters<TeardownApi['readFile']>) {
       const [filePath, encoding] = args
       const absolutePath = api.resolve(filePath)
       const stats = fs.statSync(absolutePath)

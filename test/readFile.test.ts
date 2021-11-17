@@ -22,17 +22,17 @@ afterAll(async () => {
 })
 
 it('returns the buffer of the given file', async () => {
-  expect(await api.read('file.txt')).toEqual(
+  expect(await api.readFile('file.txt')).toEqual(
     fs.readFileSync(api.resolve('file.txt')),
   )
 })
 
 it('returns the stringified buffer given "encoding" argument', async () => {
-  expect(await api.read('file.txt', 'utf8')).toEqual('hello world')
+  expect(await api.readFile('file.txt', 'utf8')).toEqual('hello world')
 })
 
 it('throws an exception when provided a directory path', async () => {
-  await expect(() => api.read('directory')).rejects.toThrow(
+  await expect(() => api.readFile('directory')).rejects.toThrow(
     'Failed to read a file at "directory": given path points to a directory.',
   )
 })

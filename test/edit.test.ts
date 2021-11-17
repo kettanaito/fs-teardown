@@ -20,16 +20,16 @@ afterAll(async () => {
 })
 
 it('edits an existing file', async () => {
-  expect(await api.read('file.txt', 'utf8')).toEqual('hello world')
+  expect(await api.readFile('file.txt', 'utf8')).toEqual('hello world')
 
   await api.edit('file.txt', 'hello universe')
-  expect(await api.read('file.txt', 'utf8')).toEqual('hello universe')
+  expect(await api.readFile('file.txt', 'utf8')).toEqual('hello universe')
 })
 
 it('edits a newly created file', async () => {
   await api.create({ 'edit-me.txt': 'some' })
   await api.edit('edit-me.txt', 'another')
-  expect(await api.read('edit-me.txt', 'utf8')).toEqual('another')
+  expect(await api.readFile('edit-me.txt', 'utf8')).toEqual('another')
 })
 
 it('throws an exception when editing a non-existing file', async () => {

@@ -16,14 +16,14 @@ afterAll(async () => {
 it('creates an empty file', async () => {
   await api.create({ 'empty-file.txt': null })
 
-  expect(await api.read('empty-file.txt', 'utf8')).toEqual('')
+  expect(await api.readFile('empty-file.txt', 'utf8')).toEqual('')
 })
 
 it('creates a dot-file', async () => {
   await api.create({ '.eslintrc': null })
 
   expect(isDirectory(api.resolve('.eslintrc'))).toEqual(false)
-  expect(await api.read('.eslintrc', 'utf8')).toEqual('')
+  expect(await api.readFile('.eslintrc', 'utf8')).toEqual('')
 })
 
 it('creates a file with content', async () => {
@@ -31,7 +31,9 @@ it('creates a file with content', async () => {
     'inject-file.txt': 'arbitrary content',
   })
 
-  expect(await api.read('inject-file.txt', 'utf8')).toEqual('arbitrary content')
+  expect(await api.readFile('inject-file.txt', 'utf8')).toEqual(
+    'arbitrary content',
+  )
 })
 
 it('creates an empty directory', async () => {
@@ -51,6 +53,6 @@ it('creates a directory with files', async () => {
   })
 
   expect(isDirectory(api.resolve('inject-nested'))).toEqual(true)
-  expect(await api.read('inject-nested/1.txt', 'utf8')).toEqual('one')
-  expect(await api.read('inject-nested/2.txt', 'utf8')).toEqual('two')
+  expect(await api.readFile('inject-nested/1.txt', 'utf8')).toEqual('one')
+  expect(await api.readFile('inject-nested/2.txt', 'utf8')).toEqual('two')
 })
