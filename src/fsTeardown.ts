@@ -1,3 +1,4 @@
+import * as os from 'os'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import { invariant } from 'outvariant'
@@ -102,7 +103,7 @@ async function emitTree(
 export function createTeardown(options: CreateTeardownOptions): TeardownApi {
   const rootDir = path.isAbsolute(options.rootDir)
     ? options.rootDir
-    : path.relative(process.cwd(), options.rootDir)
+    : path.resolve(os.tmpdir(), options.rootDir)
 
   const api: TeardownApi = {
     async prepare() {

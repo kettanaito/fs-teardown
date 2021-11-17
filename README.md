@@ -37,6 +37,8 @@ createTeardown({
 })
 ```
 
+> Providing a relative path to the `rootDir` creates the given path at the system's default directory for temporary files ([`os.tmpdir`](https://nodejs.org/api/os.html#ostmpdir)). Absolute paths are used as-is.
+
 ### `prepare(): Promise<string>`
 
 Creates files and directories specified in the `operations` of the teardown. Returns a `Promise` that resolves once all the operations have been executed.
