@@ -126,6 +126,13 @@ export function fsTeardown(options: TeardownOptions): TeardownApi {
     async readFile(...args: Parameters<TeardownApi['readFile']>) {
       const [filePath, encoding] = args
       const absolutePath = api.resolve(filePath)
+
+      invariant(
+        fs.existsSync(absolutePath),
+        'Failed to read a file at "%s": given path does not exist.',
+        filePath,
+      )
+
       const stats = fs.statSync(absolutePath)
 
       invariant(
