@@ -110,6 +110,19 @@ const api = createTeardown({
 await api.edit('file.txt', 'welcome to the jungle')
 ```
 
+### `exec(command: string, options: ExecOptions?): Promise<{ stdout, stderr }>`
+
+Executes the given command in the mocked directory.
+
+```js
+const api = createTeardown({
+  rootDir: 'exec',
+})
+
+// Initiates a new Git repository at the mocked directory.
+await api.exec('git init')
+```
+
 ### `reset(): Promise<void>`
 
 Resets the root directory to its initial state.
