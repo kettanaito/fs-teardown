@@ -2,6 +2,7 @@ import * as os from 'os'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import { invariant } from 'outvariant'
+import { exec, ExecOptions } from 'child_process'
 
 export interface TeardownApi {
   /**
@@ -30,6 +31,14 @@ export interface TeardownApi {
    * Edits a file at the given path.
    */
   edit(filePath: string, nextContent: string): Promise<void>
+
+  /**
+   * Executes the given command in the root directory.
+   */
+  exec(
+    command: string,
+    options?: ExecOptions,
+  ): Promise<{ stdout: string; stderr: string }>
 
   /**
    * Removes a file/directory at the given path.
@@ -163,6 +172,25 @@ export function createTeardown(options: CreateTeardownOptions): TeardownApi {
 
       fs.readFileSync(absolutePath)
       await fs.writeFile(absolutePath, content)
+    },
+
+    exec(command: string, options = {}) {
+      return new Promise((resolve, reject) => {
+        exec(
+          command,
+          {
+            ...options,
+            cwd: this.resolve('.'),
+          },
+          (error, stdout, stderr) => {
+            if (error) {
+              return reject(error)
+            }
+
+            resolve({ stdout, stderr })
+          },
+        )
+      })
     },
 
     async remove(filePath) {
