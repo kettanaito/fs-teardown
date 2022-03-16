@@ -1,6 +1,6 @@
 {
   "name": "fs-teardown",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Teardown API for testing file system-dependent code.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
