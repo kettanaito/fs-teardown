@@ -180,6 +180,10 @@ export function createTeardown(options: CreateTeardownOptions): TeardownApi {
           command,
           {
             ...options,
+            env: {
+              ...process.env,
+              ...(options.env || {}),
+            },
             cwd: this.resolve('.'),
           },
           (error, stdout, stderr) => {
