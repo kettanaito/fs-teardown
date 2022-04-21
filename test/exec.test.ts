@@ -36,3 +36,18 @@ it('supports custom options', async () => {
   expect(stdout).toEqual('abc-123\n')
   expect(stderr).toEqual('')
 })
+
+it('supports environmental variables through a node binary', async () => {
+  await api.create({
+    'index.js': `#!/usr/bin/env node
+console.log(process.env.SECRET)`,
+  })
+  await api.exec('chmod +x ./index.js')
+
+  const { stdout, stderr } = await api.exec('./index.js', {
+    env: { SECRET: 'abc-123' },
+  })
+
+  expect(stdout).toEqual('abc-123\n')
+  expect(stderr).toEqual('')
+})
